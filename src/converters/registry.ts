@@ -20,6 +20,7 @@ import { markdownToHtml } from './document/markdownToHtml'
 import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
 import { txtToPdf } from './document/txtToPdf'
+import { docxToPdf } from './document/docxToPdf'
 import { csvToHtml } from './spreadsheet/csvToHtml'
 import { xlsxToHtml } from './spreadsheet/xlsxToHtml'
 
@@ -58,6 +59,7 @@ const ALL_CONVERTERS: Converter[] = [
   htmlToPdf,
   htmlToMarkdown,
   txtToPdf,
+  docxToPdf,
 
   // Video (준비 중)
   // mp4ToWebm,
