@@ -21,23 +21,23 @@ export const htmlToPdf: Converter = {
     iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;'
     document.body.appendChild(iframe)
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(new Error('HTML 로드 시간이 초과되었습니다. (10초)'))
-      }, 10_000)
-      iframe.onload = () => {
-        clearTimeout(timer)
-        resolve()
-      }
-      iframe.srcdoc = html
-    })
-    onProgress?.(40)
-
-    const iframeDoc = iframe.contentDocument!
-    const body = iframeDoc.body
-
     let canvas: HTMLCanvasElement
     try {
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          reject(new Error('HTML 로드 시간이 초과되었습니다. (10초)'))
+        }, 10_000)
+        iframe.onload = () => {
+          clearTimeout(timer)
+          resolve()
+        }
+        iframe.srcdoc = html
+      })
+      onProgress?.(40)
+
+      const iframeDoc = iframe.contentDocument!
+      const body = iframeDoc.body
+
       canvas = await html2canvas(body, {
         scale: 2,
         useCORS: true,
@@ -45,7 +45,7 @@ export const htmlToPdf: Converter = {
         windowWidth: 794,
       })
     } finally {
-      // 성공/실패 무관하게 iframe 반드시 제거
+      // 성공/실패/timeout 무관하게 iframe 반드시 제거
       document.body.removeChild(iframe)
     }
     onProgress?.(75)

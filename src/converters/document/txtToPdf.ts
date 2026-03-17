@@ -36,20 +36,21 @@ export const txtToPdf: Converter = {
 </style></head>
 <body><pre>${escaped}</pre></body></html>`
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('HTML 로드 시간이 초과되었습니다.')), 10_000)
-      iframe.onload = () => { clearTimeout(timer); resolve() }
-      iframe.srcdoc = wrappedHtml
-    })
-    onProgress?.(40)
-
-    const iframeDoc = iframe.contentDocument!
-    const body = iframeDoc.body
-
     let canvas: HTMLCanvasElement
     try {
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('HTML 로드 시간이 초과되었습니다.')), 10_000)
+        iframe.onload = () => { clearTimeout(timer); resolve() }
+        iframe.srcdoc = wrappedHtml
+      })
+      onProgress?.(40)
+
+      const iframeDoc = iframe.contentDocument!
+      const body = iframeDoc.body
+
       canvas = await html2canvas(body, { scale: 2, useCORS: true, windowWidth: 794 })
     } finally {
+      // 성공/실패/timeout 무관하게 iframe 반드시 제거
       document.body.removeChild(iframe)
     }
     onProgress?.(75)

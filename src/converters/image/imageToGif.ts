@@ -48,7 +48,7 @@ function makeImageToGif(
       gif.finish()
       onProgress?.(95)
 
-      const blob = new Blob([gif.bytes().buffer as ArrayBuffer], { type: 'image/gif' })
+      const blob = new Blob([gif.bytes() as Uint8Array<ArrayBuffer>], { type: 'image/gif' })
       onProgress?.(100)
       return blob
     },

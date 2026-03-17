@@ -54,18 +54,18 @@ export const docxToPdf: Converter = {
     iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;border:none;'
     document.body.appendChild(iframe)
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(
-        () => reject(new Error('문서 로드 시간이 초과되었습니다. (10초)')),
-        10_000,
-      )
-      iframe.onload = () => { clearTimeout(timer); resolve() }
-      iframe.srcdoc = wrappedHtml
-    })
-    onProgress?.(60)
-
     let canvas: HTMLCanvasElement
     try {
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(
+          () => reject(new Error('문서 로드 시간이 초과되었습니다. (10초)')),
+          10_000,
+        )
+        iframe.onload = () => { clearTimeout(timer); resolve() }
+        iframe.srcdoc = wrappedHtml
+      })
+      onProgress?.(60)
+
       canvas = await html2canvas(iframe.contentDocument!.body, {
         scale: 2,
         useCORS: true,
@@ -73,6 +73,7 @@ export const docxToPdf: Converter = {
         windowWidth: 794,
       })
     } finally {
+      // 성공/실패/timeout 무관하게 iframe 반드시 제거
       document.body.removeChild(iframe)
     }
     onProgress?.(80)

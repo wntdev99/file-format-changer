@@ -17,17 +17,24 @@ function formatSize(bytes: number): string {
 export function ConversionPanel({ status, progress, result, error, onReset }: ConversionPanelProps) {
   if (status === 'idle') return null
 
+  let downloadUrl: string | null = null
+
   function handleDownload() {
     if (!result) return
-    const url = URL.createObjectURL(result.blob)
+    // 이전 URL이 남아 있으면 즉시 해제
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl)
+    downloadUrl = URL.createObjectURL(result.blob)
     const a = document.createElement('a')
-    a.href = url
+    a.href = downloadUrl
     a.download = result.fileName
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
     // 브라우저가 다운로드를 시작할 시간을 확보한 뒤 revoke
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    setTimeout(() => {
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl)
+      downloadUrl = null
+    }, 1000)
   }
 
   return (
