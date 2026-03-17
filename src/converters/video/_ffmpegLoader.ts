@@ -1,0 +1,45 @@
+import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { toBlobURL } from '@ffmpeg/util'
+
+// ffmpeg 인스턴스 싱글톤 — 한 번 로드 후 재사용
+let ffmpegInstance: FFmpeg | null = null
+let loadingPromise: Promise<FFmpeg> | null = null
+
+/**
+ * ffmpeg.wasm 인스턴스를 로드하고 반환합니다.
+ * 이미 로드된 경우 캐시된 인스턴스를 반환합니다.
+ */
+export async function getFFmpeg(onProgress?: (percent: number) => void): Promise<FFmpeg> {
+  if (ffmpegInstance) return ffmpegInstance
+
+  // 동시 다중 호출 시 하나의 로딩 Promise를 공유
+  if (loadingPromise) return loadingPromise
+
+  loadingPromise = (async () => {
+    const ffmpeg = new FFmpeg()
+
+    // public 폴더에 복사된 ffmpeg core 파일을 Blob URL로 로드
+    // (scripts/copy-ffmpeg.js 로 생성, git 미포함)
+    const baseURL = `${window.location.origin}/`
+    const coreURL = await toBlobURL(`${baseURL}ffmpeg-core.js`, 'text/javascript')
+    const wasmURL = await toBlobURL(`${baseURL}ffmpeg-core.wasm`, 'application/wasm')
+    onProgress?.(30)
+
+    await ffmpeg.load({ coreURL, wasmURL })
+    onProgress?.(100)
+
+    ffmpegInstance = ffmpeg
+    loadingPromise = null
+    return ffmpeg
+  })()
+
+  return loadingPromise
+}
+
+/** 변환 작업 후 ffmpeg 인스턴스를 해제합니다 (메모리 절약) */
+export function releaseFFmpeg() {
+  if (ffmpegInstance) {
+    ffmpegInstance.terminate()
+    ffmpegInstance = null
+  }
+}

@@ -4,11 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "npm run setup && vite",
+    "build": "npm run setup && tsc && vite build",
+    "preview": "vite preview",
+    "setup": "node scripts/copy-ffmpeg.js"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@types/turndown": "^5.0.6",
     "gifenc": "^1.0.3",
     "heic2any": "^0.0.4",

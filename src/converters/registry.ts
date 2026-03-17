@@ -21,6 +21,15 @@ import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
 import { txtToPdf } from './document/txtToPdf'
 import { docxToPdf } from './document/docxToPdf'
+import { mp4ToWebm } from './video/mp4ToWebm'
+import { webmToMp4 } from './video/webmToMp4'
+import { mp4ToGif } from './video/mp4ToGif'
+import { mp4ToMp3 } from './video/mp4ToMp3'
+import { mp4ToAvi } from './video/mp4ToAvi'
+import { mp3ToWav } from './audio/mp3ToWav'
+import { wavToMp3 } from './audio/wavToMp3'
+import { mp3ToOgg } from './audio/mp3ToOgg'
+import { oggToMp3 } from './audio/oggToMp3'
 import { csvToHtml } from './spreadsheet/csvToHtml'
 import { xlsxToHtml } from './spreadsheet/xlsxToHtml'
 
@@ -61,9 +70,18 @@ const ALL_CONVERTERS: Converter[] = [
   txtToPdf,
   docxToPdf,
 
-  // Video (준비 중)
-  // mp4ToWebm,
-  // mp4ToGif,
+  // Video
+  mp4ToWebm,
+  webmToMp4,
+  mp4ToGif,
+  mp4ToMp3,
+  mp4ToAvi,
+
+  // Audio
+  mp3ToWav,
+  wavToMp3,
+  mp3ToOgg,
+  oggToMp3,
 ]
 
 /** 전체 변환기 목록 반환 */
