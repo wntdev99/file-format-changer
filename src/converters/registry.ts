@@ -22,6 +22,9 @@ import { markdownToDocx } from './document/markdownToDocx'
 import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
 import { docxToMarkdown } from './document/docxToMarkdown'
+import { mermaidToPng } from './document/mermaidToPng'
+import { mermaidToSvg } from './document/mermaidToSvg'
+import { mermaidToPdf } from './document/mermaidToPdf'
 import { txtToPdf } from './document/txtToPdf'
 import { docxToPdf } from './document/docxToPdf'
 import { csvToMarkdown } from './spreadsheet/csvToMarkdown'
@@ -77,6 +80,9 @@ const ALL_CONVERTERS: Converter[] = [
   htmlToPdf,
   htmlToMarkdown,
   docxToMarkdown,
+  mermaidToPng,
+  mermaidToSvg,
+  mermaidToPdf,
   txtToPdf,
   docxToPdf,
 

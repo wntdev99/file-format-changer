@@ -64,6 +64,8 @@ export function PreviewPane({ source, ext, label }: PreviewPaneProps) {
     }
 
     // 텍스트/스프레드시트/문서 — 비동기 처리
+    // mmd 렌더링이 생성하는 Blob URL은 IIFE 외부에서 추적하여 cleanup에서 회수
+    let mmdBlobUrl: string | null = null
     ;(async () => {
       try {
         if (e === 'txt') {
@@ -130,6 +132,17 @@ export function PreviewPane({ source, ext, label }: PreviewPaneProps) {
           const { value } = await convertToHtml({ arrayBuffer: buf })
           setState({ kind: 'html', html: wrapDocxHtml(value) })
 
+        } else if (e === 'mmd' || e === 'mermaid') {
+          const [{ renderMermaidSvg }, code] = await Promise.all([
+            import('../utils/mermaid'),
+            source.text(),
+          ])
+          if (cancelled) return
+          const svg = await renderMermaidSvg(code)
+          if (cancelled) return
+          mmdBlobUrl = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
+          setState({ kind: 'image', url: mmdBlobUrl })
+
         } else {
           setState({ kind: 'unsupported' })
         }
@@ -138,7 +151,10 @@ export function PreviewPane({ source, ext, label }: PreviewPaneProps) {
       }
     })()
 
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      if (mmdBlobUrl) URL.revokeObjectURL(mmdBlobUrl)
+    }
   }, [source, ext])
 
   return (
