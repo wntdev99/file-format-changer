@@ -19,7 +19,9 @@ export const xlsxToHtml: Converter = {
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
     onProgress?.(70)
 
-    const tableHtml = XLSX.utils.sheet_to_html(firstSheet)
+    // sheet_to_html()은 전체 HTML 문서를 반환하므로 <table> 부분만 추출
+    const rawHtml = XLSX.utils.sheet_to_html(firstSheet)
+    const tableOnly = rawHtml.match(/<table[\s\S]*<\/table>/i)?.[0] ?? ''
     const baseName = file.name.replace(/\.[^.]+$/, '')
 
     const html = `<!DOCTYPE html>
@@ -37,7 +39,7 @@ export const xlsxToHtml: Converter = {
   </style>
 </head>
 <body>
-${tableHtml}
+${tableOnly}
 </body>
 </html>`
 
