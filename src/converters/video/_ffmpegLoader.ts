@@ -17,20 +17,25 @@ export async function getFFmpeg(onProgress?: (percent: number) => void): Promise
 
   loadingPromise = (async () => {
     const ffmpeg = new FFmpeg()
+    try {
+      // public 폴더에 복사된 ffmpeg core 파일을 Blob URL로 로드
+      // (scripts/copy-ffmpeg.js 로 생성, git 미포함)
+      const baseURL = `${window.location.origin}/`
+      const coreURL = await toBlobURL(`${baseURL}ffmpeg-core.js`, 'text/javascript')
+      const wasmURL = await toBlobURL(`${baseURL}ffmpeg-core.wasm`, 'application/wasm')
+      onProgress?.(30)
 
-    // public 폴더에 복사된 ffmpeg core 파일을 Blob URL로 로드
-    // (scripts/copy-ffmpeg.js 로 생성, git 미포함)
-    const baseURL = `${window.location.origin}/`
-    const coreURL = await toBlobURL(`${baseURL}ffmpeg-core.js`, 'text/javascript')
-    const wasmURL = await toBlobURL(`${baseURL}ffmpeg-core.wasm`, 'application/wasm')
-    onProgress?.(30)
+      await ffmpeg.load({ coreURL, wasmURL })
+      onProgress?.(100)
 
-    await ffmpeg.load({ coreURL, wasmURL })
-    onProgress?.(100)
-
-    ffmpegInstance = ffmpeg
-    loadingPromise = null
-    return ffmpeg
+      ffmpegInstance = ffmpeg
+      return ffmpeg
+    } finally {
+      // 성공·실패 무관하게 loadingPromise 초기화
+      // 실패 시: 다음 호출에서 재시도 가능
+      // 성공 시: 이후 ffmpegInstance 경로로 즉시 반환
+      loadingPromise = null
+    }
   })()
 
   return loadingPromise

@@ -42,15 +42,17 @@ export function makeFFmpegConverter(opts: FFmpegConverterOptions): Converter {
       await ffmpeg.writeFile(inputName, await fetchFile(file))
       onProgress?.(50)
 
-      await ffmpeg.exec(['-i', inputName, ...opts.args, outputName])
-      onProgress?.(85)
-
-      const data = await ffmpeg.readFile(outputName)
-      onProgress?.(92)
-
-      // 임시 파일 정리
-      await ffmpeg.deleteFile(inputName).catch(() => {})
-      await ffmpeg.deleteFile(outputName).catch(() => {})
+      let data: Uint8Array | string
+      try {
+        await ffmpeg.exec(['-i', inputName, ...opts.args, outputName])
+        onProgress?.(85)
+        data = await ffmpeg.readFile(outputName)
+        onProgress?.(92)
+      } finally {
+        // exec 성공·실패 무관하게 가상 FS 임시 파일 정리
+        await ffmpeg.deleteFile(inputName).catch(() => {})
+        await ffmpeg.deleteFile(outputName).catch(() => {})
+      }
       onProgress?.(95)
 
       const blobPart = data instanceof Uint8Array
