@@ -12,9 +12,15 @@ import { jpgToWebp } from './image/jpgToWebp'
 import { webpToPng } from './image/webpToPng'
 import { webpToJpg } from './image/webpToJpg'
 import { svgToPng } from './image/svgToPng'
+import { gifToPng } from './image/gifToPng'
+import { gifToWebp } from './image/gifToWebp'
+import { pngToGif, jpgToGif, webpToGif } from './image/imageToGif'
 import { markdownToHtml } from './document/markdownToHtml'
 import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
+import { txtToPdf } from './document/txtToPdf'
+import { csvToHtml } from './spreadsheet/csvToHtml'
+import { xlsxToHtml } from './spreadsheet/xlsxToHtml'
 
 /**
  * 전체 변환기 목록.
@@ -28,6 +34,8 @@ const ALL_CONVERTERS: Converter[] = [
   jsonToCsv,
   xlsxToJson,
   jsonToXlsx,
+  csvToHtml,
+  xlsxToHtml,
 
   // Image
   pngToJpg,
@@ -37,11 +45,17 @@ const ALL_CONVERTERS: Converter[] = [
   webpToPng,
   webpToJpg,
   svgToPng,
+  gifToPng,
+  gifToWebp,
+  pngToGif,
+  jpgToGif,
+  webpToGif,
 
   // Document
   markdownToHtml,
   htmlToPdf,
   htmlToMarkdown,
+  txtToPdf,
 
   // Video (준비 중)
   // mp4ToWebm,
