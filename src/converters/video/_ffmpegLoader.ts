@@ -7,10 +7,14 @@ let loadingPromise: Promise<FFmpeg> | null = null
 
 /**
  * ffmpeg.wasm 인스턴스를 로드하고 반환합니다.
- * 이미 로드된 경우 캐시된 인스턴스를 반환합니다.
+ * 이미 로드된 경우 캐시된 인스턴스를 즉시 반환합니다.
  */
 export async function getFFmpeg(onProgress?: (percent: number) => void): Promise<FFmpeg> {
-  if (ffmpegInstance) return ffmpegInstance
+  // 캐시된 인스턴스가 있으면 진행률을 100으로 즉시 완료 처리 후 반환
+  if (ffmpegInstance) {
+    onProgress?.(100)
+    return ffmpegInstance
+  }
 
   // 동시 다중 호출 시 하나의 로딩 Promise를 공유
   if (loadingPromise) return loadingPromise
@@ -39,12 +43,4 @@ export async function getFFmpeg(onProgress?: (percent: number) => void): Promise
   })()
 
   return loadingPromise
-}
-
-/** 변환 작업 후 ffmpeg 인스턴스를 해제합니다 (메모리 절약) */
-export function releaseFFmpeg() {
-  if (ffmpegInstance) {
-    ffmpegInstance.terminate()
-    ffmpegInstance = null
-  }
 }
