@@ -1,28 +1,37 @@
 import type { Converter, ConverterCategory } from '../types/converter'
 import { csvToXlsx } from './spreadsheet/csvToXlsx'
+import { xlsxToCsv } from './spreadsheet/xlsxToCsv'
+import { csvToJson } from './spreadsheet/csvToJson'
+import { jsonToCsv } from './spreadsheet/jsonToCsv'
+import { pngToJpg } from './image/pngToJpg'
+import { jpgToPng } from './image/jpgToPng'
+import { pngToWebp } from './image/pngToWebp'
+import { jpgToWebp } from './image/jpgToWebp'
+import { markdownToHtml } from './document/markdownToHtml'
 
 /**
  * 전체 변환기 목록.
  * 새 변환기를 추가할 때는 이 배열에만 추가하면 됩니다.
- *
- * 추후 추가 예시:
- *   import { pngToWebp } from './image/pngToWebp'
- *   import { mp4ToWebm } from './video/mp4ToWebm'
  */
 const ALL_CONVERTERS: Converter[] = [
   // Spreadsheet
   csvToXlsx,
+  xlsxToCsv,
+  csvToJson,
+  jsonToCsv,
 
-  // Image (준비 중)
-  // pngToWebp,
-  // jpgToPng,
+  // Image
+  pngToJpg,
+  jpgToPng,
+  pngToWebp,
+  jpgToWebp,
+
+  // Document
+  markdownToHtml,
 
   // Video (준비 중)
   // mp4ToWebm,
   // mp4ToGif,
-
-  // Document (준비 중)
-  // docxToPdf,
 ]
 
 /** 전체 변환기 목록 반환 */
