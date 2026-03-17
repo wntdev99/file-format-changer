@@ -15,6 +15,7 @@ import { svgToPng } from './image/svgToPng'
 import { gifToPng } from './image/gifToPng'
 import { gifToWebp } from './image/gifToWebp'
 import { pngToGif, jpgToGif, webpToGif } from './image/imageToGif'
+import { heicToJpg } from './image/heicToJpg'
 import { markdownToHtml } from './document/markdownToHtml'
 import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
@@ -50,6 +51,7 @@ const ALL_CONVERTERS: Converter[] = [
   pngToGif,
   jpgToGif,
   webpToGif,
+  heicToJpg,
 
   // Document
   markdownToHtml,
