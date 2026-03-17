@@ -14,7 +14,14 @@ export function FileUploadZone({ converter, onFileSelect }: FileUploadZoneProps)
     e.preventDefault()
     setDragging(false)
     const file = e.dataTransfer.files[0]
-    if (file) onFileSelect(file)
+    if (!file) return
+
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+    if (ext !== converter.inputExtension) {
+      alert(`${converter.inputExtension.toUpperCase()} 파일만 업로드할 수 있습니다.`)
+      return
+    }
+    onFileSelect(file)
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -35,7 +42,13 @@ export function FileUploadZone({ converter, onFileSelect }: FileUploadZoneProps)
       <p className="upload-text">
         <strong>.{converter.inputExtension.toUpperCase()}</strong> 파일을 여기에 끌어다 놓거나
       </p>
-      <button className="upload-btn" type="button">파일 선택</button>
+      <button
+        className="upload-btn"
+        type="button"
+        onClick={(e) => { e.stopPropagation(); inputRef.current?.click() }}
+      >
+        파일 선택
+      </button>
       <input
         ref={inputRef}
         type="file"

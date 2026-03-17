@@ -17,6 +17,8 @@ export const svgToPng: Converter = {
     // SVG의 실제 크기 파싱 (없으면 기본값)
     const parser = new DOMParser()
     const svgDoc = parser.parseFromString(svgText, 'image/svg+xml')
+    const parseError = svgDoc.querySelector('parsererror')
+    if (parseError) throw new Error('유효하지 않은 SVG 파일입니다.')
     const svgEl = svgDoc.documentElement
 
     const viewBox = svgEl.getAttribute('viewBox')?.split(/[\s,]+/).map(Number)

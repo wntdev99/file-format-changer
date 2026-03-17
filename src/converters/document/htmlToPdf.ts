@@ -30,16 +30,19 @@ export const htmlToPdf: Converter = {
     const iframeDoc = iframe.contentDocument!
     const body = iframeDoc.body
 
-    // 전체 높이로 canvas 생성
-    const canvas = await html2canvas(body, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      windowWidth: 794,
-    })
+    let canvas: HTMLCanvasElement
+    try {
+      canvas = await html2canvas(body, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        windowWidth: 794,
+      })
+    } finally {
+      // 성공/실패 무관하게 iframe 반드시 제거
+      document.body.removeChild(iframe)
+    }
     onProgress?.(75)
-
-    document.body.removeChild(iframe)
 
     // A4 기준으로 PDF 생성 (210mm × 297mm)
     const A4_WIDTH_MM = 210

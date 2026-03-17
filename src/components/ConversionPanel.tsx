@@ -23,8 +23,11 @@ export function ConversionPanel({ status, progress, result, error, onReset }: Co
     const a = document.createElement('a')
     a.href = url
     a.download = result.fileName
+    document.body.appendChild(a)
     a.click()
-    URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+    // 브라우저가 다운로드를 시작할 시간을 확보한 뒤 revoke
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
   return (
