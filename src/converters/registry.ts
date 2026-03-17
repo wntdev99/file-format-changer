@@ -17,10 +17,15 @@ import { gifToWebp } from './image/gifToWebp'
 import { pngToGif, jpgToGif, webpToGif } from './image/imageToGif'
 import { heicToJpg } from './image/heicToJpg'
 import { markdownToHtml } from './document/markdownToHtml'
+import { markdownToPdf } from './document/markdownToPdf'
+import { markdownToDocx } from './document/markdownToDocx'
 import { htmlToPdf } from './document/htmlToPdf'
 import { htmlToMarkdown } from './document/htmlToMarkdown'
+import { docxToMarkdown } from './document/docxToMarkdown'
 import { txtToPdf } from './document/txtToPdf'
 import { docxToPdf } from './document/docxToPdf'
+import { csvToMarkdown } from './spreadsheet/csvToMarkdown'
+import { jsonToMarkdown } from './spreadsheet/jsonToMarkdown'
 import { mp4ToWebm } from './video/mp4ToWebm'
 import { webmToMp4 } from './video/webmToMp4'
 import { mp4ToGif } from './video/mp4ToGif'
@@ -47,6 +52,8 @@ const ALL_CONVERTERS: Converter[] = [
   jsonToXlsx,
   csvToHtml,
   xlsxToHtml,
+  csvToMarkdown,
+  jsonToMarkdown,
 
   // Image
   pngToJpg,
@@ -65,8 +72,11 @@ const ALL_CONVERTERS: Converter[] = [
 
   // Document
   markdownToHtml,
+  markdownToPdf,
+  markdownToDocx,
   htmlToPdf,
   htmlToMarkdown,
+  docxToMarkdown,
   txtToPdf,
   docxToPdf,
 

@@ -85,9 +85,22 @@ export function PreviewPane({ source, ext, label }: PreviewPaneProps) {
           setState({ kind: 'html', html })
 
         } else if (e === 'md') {
-          const [{ marked }, text] = await Promise.all([import('marked'), source.text()])
+          const [{ Marked, Renderer }, hljsMod, text] = await Promise.all([
+            import('marked'),
+            import('highlight.js/lib/common'),
+            source.text(),
+          ])
           if (cancelled) return
-          const body = await marked(text as string)
+          const hljs = hljsMod.default
+          const renderer = new Renderer()
+          renderer.code = ({ text: code, lang }: { text: string; lang?: string }) => {
+            const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext'
+            const highlighted = hljs.highlight(code, { language }).value
+            return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`
+          }
+          // 전역 marked 오염 방지: 호출별 독립 Marked 인스턴스 사용
+          const localMarked = new Marked({ renderer })
+          const body = await localMarked.parse(text as string)
           setState({ kind: 'html', html: wrapMarkdownHtml(body as string) })
 
         } else if (e === 'csv') {
@@ -182,11 +195,32 @@ function wrapMarkdownHtml(body: string): string {
          line-height: 1.7; color: #1e293b; font-size: 0.9rem; }
   h1, h2, h3 { margin: 1em 0 0.4em; }
   p { margin: 0 0 0.7em; }
-  code { background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 3px; }
-  pre { background: #f1f5f9; padding: 0.8rem; border-radius: 6px;
+  code { background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 3px; font-family: 'Courier New', monospace; }
+  pre { background: #f6f8fa; padding: 0.8rem; border-radius: 6px;
         overflow: auto; font-size: 0.85rem; }
+  pre code.hljs { background: transparent; padding: 0; border-radius: 0; }
   a { color: #2563eb; }
   blockquote { border-left: 3px solid #e2e8f0; margin: 0; padding-left: 1rem; color: #64748b; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.3em 0.6em; }
+  th { background: #f1f5f9; }
+  /* highlight.js github theme (minimal) */
+  .hljs { color: #24292e; }
+  .hljs-comment,.hljs-punctuation { color: #6a737d; }
+  .hljs-attr,.hljs-attribute,.hljs-keyword,.hljs-name,.hljs-operator,.hljs-selector-tag { color: #d73a49; }
+  .hljs-class .hljs-title,.hljs-title,.hljs-title.class_ { color: #6f42c1; }
+  .hljs-number,.hljs-literal { color: #005cc5; }
+  .hljs-string,.hljs-doctag,.hljs-regexp { color: #032f62; }
+  .hljs-built_in,.hljs-variable.language_ { color: #e36209; }
+  .hljs-function .hljs-title,.hljs-title.function_ { color: #6f42c1; }
+  .hljs-params { color: #24292e; }
+  .hljs-tag { color: #22863a; }
+  .hljs-selector-class,.hljs-selector-id { color: #6f42c1; }
+  .hljs-meta { color: #735c0f; }
+  .hljs-addition { background: #f0fff4; color: #22863a; }
+  .hljs-deletion { background: #ffeef0; color: #b31d28; }
+  .hljs-emphasis { font-style: italic; }
+  .hljs-strong { font-weight: bold; }
 </style></head><body>${body}</body></html>`
 }
 
