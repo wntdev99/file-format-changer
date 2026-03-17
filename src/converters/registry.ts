@@ -3,13 +3,18 @@ import { csvToXlsx } from './spreadsheet/csvToXlsx'
 import { xlsxToCsv } from './spreadsheet/xlsxToCsv'
 import { csvToJson } from './spreadsheet/csvToJson'
 import { jsonToCsv } from './spreadsheet/jsonToCsv'
+import { xlsxToJson } from './spreadsheet/xlsxToJson'
+import { jsonToXlsx } from './spreadsheet/jsonToXlsx'
 import { pngToJpg } from './image/pngToJpg'
 import { jpgToPng } from './image/jpgToPng'
 import { pngToWebp } from './image/pngToWebp'
 import { jpgToWebp } from './image/jpgToWebp'
+import { webpToPng } from './image/webpToPng'
+import { webpToJpg } from './image/webpToJpg'
+import { svgToPng } from './image/svgToPng'
 import { markdownToHtml } from './document/markdownToHtml'
 import { htmlToPdf } from './document/htmlToPdf'
-import { svgToPng } from './image/svgToPng'
+import { htmlToMarkdown } from './document/htmlToMarkdown'
 
 /**
  * 전체 변환기 목록.
@@ -21,17 +26,22 @@ const ALL_CONVERTERS: Converter[] = [
   xlsxToCsv,
   csvToJson,
   jsonToCsv,
+  xlsxToJson,
+  jsonToXlsx,
 
   // Image
   pngToJpg,
   jpgToPng,
   pngToWebp,
   jpgToWebp,
+  webpToPng,
+  webpToJpg,
   svgToPng,
 
   // Document
   markdownToHtml,
   htmlToPdf,
+  htmlToMarkdown,
 
   // Video (준비 중)
   // mp4ToWebm,
