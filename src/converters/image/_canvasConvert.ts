@@ -17,6 +17,13 @@ export async function convertImageViaCanvas(
   canvas.height = bitmap.height
 
   const ctx = canvas.getContext('2d')!
+
+  // JPEG는 투명 채널을 지원하지 않으므로 흰 배경을 먼저 채워 검정 배경 방지
+  if (mimeType === 'image/jpeg') {
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+  }
+
   ctx.drawImage(bitmap, 0, 0)
   bitmap.close()
   onProgress?.(80)

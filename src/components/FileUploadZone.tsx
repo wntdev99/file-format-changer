@@ -16,9 +16,16 @@ export function FileUploadZone({ converter, onFileSelect }: FileUploadZoneProps)
     const file = e.dataTransfer.files[0]
     if (!file) return
 
+    // inputAccept에서 .ext 형태의 확장자만 추출해 허용 목록 구성
+    // (.jpeg, .jpg, .htm, .html 등 별칭 확장자 모두 허용)
+    const allowedExts = converter.inputAccept
+      .split(',')
+      .filter((s) => s.trim().startsWith('.'))
+      .map((s) => s.trim().slice(1).toLowerCase())
+
     const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
-    if (ext !== converter.inputExtension) {
-      alert(`${converter.inputExtension.toUpperCase()} 파일만 업로드할 수 있습니다.`)
+    if (!allowedExts.includes(ext)) {
+      alert(`${allowedExts.map((e) => `.${e.toUpperCase()}`).join(', ')} 파일만 업로드할 수 있습니다.`)
       return
     }
     onFileSelect(file)

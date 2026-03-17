@@ -21,8 +21,14 @@ export const htmlToPdf: Converter = {
     iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;'
     document.body.appendChild(iframe)
 
-    await new Promise<void>((resolve) => {
-      iframe.onload = () => resolve()
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error('HTML 로드 시간이 초과되었습니다. (10초)'))
+      }, 10_000)
+      iframe.onload = () => {
+        clearTimeout(timer)
+        resolve()
+      }
       iframe.srcdoc = html
     })
     onProgress?.(40)
