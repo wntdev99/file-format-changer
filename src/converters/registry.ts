@@ -8,6 +8,8 @@ import { jpgToPng } from './image/jpgToPng'
 import { pngToWebp } from './image/pngToWebp'
 import { jpgToWebp } from './image/jpgToWebp'
 import { markdownToHtml } from './document/markdownToHtml'
+import { htmlToPdf } from './document/htmlToPdf'
+import { svgToPng } from './image/svgToPng'
 
 /**
  * 전체 변환기 목록.
@@ -25,9 +27,11 @@ const ALL_CONVERTERS: Converter[] = [
   jpgToPng,
   pngToWebp,
   jpgToWebp,
+  svgToPng,
 
   // Document
   markdownToHtml,
+  htmlToPdf,
 
   // Video (준비 중)
   // mp4ToWebm,
